@@ -20,7 +20,8 @@
         android:layout_height="wrap_content"
         android:text="Randomize Stunt"
         android:onClick="randomizeStunt"
-        android:layout_below="@+id/stuntText" />
+        android:layout_below="@+id/stuntText"
+        style="@style/btnStyleBeige"/>
 
     <Button
         android:id="@+id/AddStunt"
@@ -28,5 +29,15 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/randomizeStunt"
         android:text="Add Stunt"
-        android:onClick="addStunt"/>
+        android:onClick="addStunt"
+        style="@style/btnStyleBeige"/>
+
+    <Button
+        android:layout_below="@id/AddStunt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit List of Stunts"
+        android:onClick="editStuntList"
+        style="@style/btnStyleBeige"/>
+
 </RelativeLayout>
