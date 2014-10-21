@@ -57,10 +57,17 @@ public class MainActivity extends Activity
         Random myRandomizer = new Random();
         Stunt stunt = stunts.get(myRandomizer.nextInt(stunts.size()));
         TextView stuntText  = (TextView) findViewById(R.id.stuntText);
+<<<<<<< HEAD
         stuntText.setText(stunt.stuntName);
         new AlertDialog.Builder(this)
                 .setTitle("Here is your Stunt!")
                 .setMessage(stunt.stuntName)
+=======
+        stuntText.setText(random.stuntName);
+        new AlertDialog.Builder(this)
+                .setTitle("Here is your Stunt!")
+                .setMessage(random.stuntName)
+>>>>>>> 8123e4f3495c0cc71f808a4540140f53952a8d53
                 .setPositiveButton("Keep this Stunt" , new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -78,6 +85,10 @@ public class MainActivity extends Activity
                     }
                 })
                 .show();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 8123e4f3495c0cc71f808a4540140f53952a8d53
     }
 
     public void addStunt(final View view)
@@ -92,11 +103,24 @@ public class MainActivity extends Activity
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (stuntInput.getText().toString().trim().equals("")) {
+<<<<<<< HEAD
                     stuntInput.setError("Stunt field cannot be null");
                 }
                 else {
                     String newStunt = stuntInput.getText().toString();
                     //Add the new Stunt to the database
+=======
+                    Toast.makeText(getApplicationContext(), "Stunt field cannont be blank! Please try again.", Toast.LENGTH_LONG).show();
+                    dialogInterface.cancel();
+                }
+                else {
+                    String newStunt = stuntInput.getText().toString();
+
+                    //Add the new Stunt to the database
+
+                    Toast.makeText(getApplicationContext(), "Stunt had been added!", Toast.LENGTH_SHORT).show();
+                    dialogInterface.cancel();
+>>>>>>> 8123e4f3495c0cc71f808a4540140f53952a8d53
                 }
             }
         });

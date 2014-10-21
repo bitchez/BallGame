@@ -20,7 +20,12 @@
         android:layout_height="wrap_content"
         android:text="Randomize Stunt"
         android:onClick="randomizeStunt"
+<<<<<<< HEAD
         android:layout_below="@+id/stuntText" />
+=======
+        android:layout_below="@+id/stuntText"
+        style="@style/btnStyleBeige"/>
+>>>>>>> 8123e4f3495c0cc71f808a4540140f53952a8d53
 
     <Button
         android:id="@+id/AddStunt"
@@ -28,6 +33,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/randomizeStunt"
         android:text="Add Stunt"
+<<<<<<< HEAD
         android:onClick="addStunt"/>
+=======
+        android:onClick="addStunt"
+        style="@style/btnStyleBeige"/>
+>>>>>>> 8123e4f3495c0cc71f808a4540140f53952a8d53
 
 </RelativeLayout>
