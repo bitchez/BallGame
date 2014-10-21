@@ -3,6 +3,7 @@ package ball.Activites;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -79,7 +80,6 @@ public class MainActivity extends Activity
                     }
                 })
                 .show();
-
     }
 
     public void addStunt(final View view)
@@ -115,6 +115,12 @@ public class MainActivity extends Activity
         });
         alert.show();
     }
+
+public void editStuntList (View view)
+{
+    Intent intent = new Intent(this, EditStuntList.class);
+    startActivity(intent);
+}
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

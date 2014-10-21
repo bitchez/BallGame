@@ -32,4 +32,12 @@
         android:onClick="addStunt"
         style="@style/btnStyleBeige"/>
 
+    <Button
+        android:layout_below="@id/AddStunt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Edit List of Stunts"
+        android:onClick="editStuntList"
+        style="@style/btnStyleBeige"/>
+
 </RelativeLayout>
