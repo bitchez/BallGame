@@ -16,11 +16,20 @@
 
     <Button
         android:id="@+id/randomizeStunt"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="press this"
+        android:text="Randomize Stunt"
         android:onClick="randomizeStunt"
         android:layout_below="@+id/stuntText"
-        android:width="200dp" />
+        style="@style/btnStyleBeige"/>
+
+    <Button
+        android:id="@+id/AddStunt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/randomizeStunt"
+        android:text="Add Stunt"
+        android:onClick="addStunt"
+        style="@style/btnStyleBeige"/>
 
 </RelativeLayout>

@@ -1,10 +1,13 @@
 package ball.Activites;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +59,61 @@ public class MainActivity extends Activity
         Stunt random = stunts.get(myRandomizer.nextInt(stunts.size()));
         TextView stuntText  = (TextView) findViewById(R.id.stuntText);
         stuntText.setText(random.stuntName);
+        new AlertDialog.Builder(this)
+                .setTitle("Here is your Stunt!")
+                .setMessage(random.stuntName)
+                .setPositiveButton("Keep this Stunt" , new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.cancel();
+                    }
+                })
+                .setNegativeButton("Delete this Stunt", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //This is where the stunt will be deleted from the database
+                        //After deletion, the dialog will close the dialogue box
+                        //And show a toast saying stunt has been deleted
+                        Toast.makeText(getApplicationContext(), "Stunt has been deleted", Toast.LENGTH_SHORT).show();
+                        dialogInterface.cancel();
+                    }
+                })
+                .show();
+
+    }
+
+    public void addStunt(final View view)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final EditText stuntInput = new EditText(this);
+
+        alert.setTitle("Add New Stunt");
+        alert.setMessage("Type in a new Stunt and select ok to save.");
+        alert.setView(stuntInput);
+        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                if (stuntInput.getText().toString().trim().equals("")) {
+                    Toast.makeText(getApplicationContext(), "Stunt field cannont be blank! Please try again.", Toast.LENGTH_LONG).show();
+                    dialogInterface.cancel();
+                }
+                else {
+                    String newStunt = stuntInput.getText().toString();
+
+                    //Add the new Stunt to the database
+
+                    Toast.makeText(getApplicationContext(), "Stunt had been added!", Toast.LENGTH_SHORT).show();
+                    dialogInterface.cancel();
+                }
+            }
+        });
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        alert.show();
     }
 
     @Override
