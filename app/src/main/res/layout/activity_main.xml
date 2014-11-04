@@ -7,37 +7,28 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context=".MainActivity">
+    <Button
+        android:id="@+id/randomizeStunt"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Randomize"
+        android:onClick="randomizeStunt"
+        style="@style/btnStyleBeige"/>
 
     <TextView
         android:id="@+id/stuntText"
         android:text="you havent pressed the button yet"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:id="@+id/randomizeStunt"
-        android:layout_width="fill_parent"
+        android:layout_below="@+id/randomizeStunt"
         android:layout_height="wrap_content"
-        android:text="Randomize Stunt"
-        android:onClick="randomizeStunt"
-        android:layout_below="@+id/stuntText"
-        style="@style/btnStyleBeige"/>
+        android:textAlignment="center" />
 
-    <Button
-        android:id="@+id/AddStunt"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/randomizeStunt"
-        android:text="Add Stunt"
-        android:onClick="addStunt"
-        style="@style/btnStyleBeige"/>
-
-    <Button
-        android:layout_below="@id/AddStunt"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Edit List of Stunts"
-        android:onClick="editStuntList"
-        style="@style/btnStyleBeige"/>
+    <!--<Button-->
+        <!--android:layout_below="@id/stuntText"-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:text="View all"-->
+        <!--android:onClick="editStuntList"-->
+        <!--style="@style/btnStyleBeige"/>-->
 
 </RelativeLayout>

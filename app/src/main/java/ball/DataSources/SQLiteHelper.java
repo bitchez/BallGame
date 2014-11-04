@@ -1,5 +1,6 @@
 package ball.DataSources;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -26,10 +28,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     private static String DB_PATH = "data/data/com.game.ball.ballgame/databases/";
     private static String DB_NAME = "StuntsDB";
     private static String TABLE_STUNTS = "Stunts";
+    private static String COLUMN_STUNT_ID = "StuntId";
+    private static String COLUMN_STUNT_NAME = "StuntName";
+    private String[] allColumns = { COLUMN_STUNT_ID, COLUMN_STUNT_NAME};
     private final Context context;
     private SQLiteDatabase db;
 
-    // constructor
     public SQLiteHelper(Context context) {
         super(context, DB_NAME, null, 1);
         this.context = context;
@@ -37,24 +41,18 @@ public class SQLiteHelper extends SQLiteOpenHelper {
 
     // Creates a empty database on the system and rewrites it with your own database.
     public void create() throws IOException {
-
         boolean dbExist = checkDataBase();
 
-        if (dbExist)
-        {
-            copyDataBase();
+        if (dbExist){
             //do nothing - database already exist
+            //copyDataBase();
         }
         else {
             //By calling this method and empty database will be created into the default system path
             //of your application so we are gonna be able to overwrite that database with our database.
             this.getReadableDatabase();
 
-            try {
-                copyDataBase();
-
-            } catch (IOException e) {
-
+            try { copyDataBase(); } catch (IOException e) {
                 throw new Error("Error copying database");
             }
         }
@@ -68,15 +66,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         try {
             String path = DB_PATH + DB_NAME;
             checkDB = SQLiteDatabase.openDatabase(path, null, SQLiteDatabase.OPEN_READONLY);
-
-
         } catch (SQLiteException e) {
             // database don't exist yet.
             e.printStackTrace();
         }
 
         if (checkDB != null) {
-
             checkDB.close();
         }
 
@@ -119,50 +114,77 @@ public class SQLiteHelper extends SQLiteOpenHelper {
     @Override
     public synchronized void close()
     {
-        if (db != null)
+        if (db != null) {
             db.close();
-
+        }
         super.close();
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
     }
 
-    // Get locations
-    public List<Stunt> getStunts() {
+    public ArrayList<Stunt> getStunts() {
 
-        List<Stunt> stunts = null;
+        List<Stunt> stunts = new ArrayList<Stunt>();
 
         try {
             String query  = "SELECT * FROM " + TABLE_STUNTS;
             SQLiteDatabase db = SQLiteDatabase.openDatabase( DB_PATH + DB_NAME , null, SQLiteDatabase.OPEN_READWRITE);
             Cursor cursor = db.rawQuery(query, null);
 
-            // go over each row, build elements and add it to list
-            stunts = new LinkedList<Stunt>();
-
             if (cursor.moveToFirst()) {
                 do {
                     Stunt stunt = new Stunt();
                     stunt.stuntId = Integer.parseInt(cursor.getString(0));
                     stunt.stuntName = cursor.getString(1);
-
                     stunts.add(stunt);
 
                 } while (cursor.moveToNext());
             }
-        } catch(Exception e) {
-            // sql error
-        }
+        } catch(Exception e)  { }
 
-        return stunts;
+        return (ArrayList<Stunt>) stunts;
     }
 
+    public boolean updateStunt(Stunt selectedStunt) {
+        ContentValues args = new ContentValues();
+        args.put(COLUMN_STUNT_NAME, selectedStunt.stuntName);
+        return db.update(TABLE_STUNTS, args, COLUMN_STUNT_ID + "=" + selectedStunt.stuntId, null) > 0;
+    }
+
+    public boolean deleteStunt(Stunt selectedStunt) {
+        return db.delete(TABLE_STUNTS, COLUMN_STUNT_ID + "=" + selectedStunt.stuntId, null) > 0;
+    }
+
+    public Stunt insertStunt(Stunt stunt)
+    {
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_STUNT_NAME, stunt.stuntName);
+        values.put(COLUMN_STUNT_ID, stunt.stuntId);
+
+        long insertId = db.insert(TABLE_STUNTS, null, values);
+
+        Cursor cursor = db.query(TABLE_STUNTS,
+                allColumns, COLUMN_STUNT_ID + " = " + insertId, null,
+                null, null, null);
+
+        cursor.moveToFirst();
+
+        Stunt newStunt = cursorToStunt(cursor);
+        cursor.close();
+        return stunt;
+    }
+
+    private Stunt cursorToStunt(Cursor cursor)
+    {
+        Stunt stunt = new Stunt();
+        stunt.stuntId = cursor.getInt(0);
+        stunt.stuntName = cursor.getString(1);
+        return stunt;
+    }
 }

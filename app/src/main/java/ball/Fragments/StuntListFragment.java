@@ -1,37 +1,27 @@
-package ball.Activites;
+package ball.Fragments;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.database.sqlite.SQLiteConstraintException;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
-import android.support.v4.app.FragmentActivity;
-import ball.Adapters.CustomArrayAdapter;
 import com.game.ball.ballgame.R;
-import android.widget.ImageButton;
 import com.melnykov.fab.FloatingActionButton;
-import android.widget.Toast;
-
 import java.io.IOException;
 import java.util.ArrayList;
-
+import ball.Adapters.CustomArrayAdapter;
 import ball.DataSources.SQLiteHelper;
 import ball.Models.Stunt;
 
-public class EditStuntList extends FragmentActivity  {
+public class StuntListFragment extends Fragment {
 
     public ArrayList<Stunt> stunts = null;
     private ListView listView;
@@ -41,18 +31,22 @@ public class EditStuntList extends FragmentActivity  {
     private static CustomArrayAdapter adapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_stunt_list);
-
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View root = inflater.inflate(R.layout.fragment_stunt_list_fragement, container, false);
         initializeDataSources();
 
-        listView = (ListView) findViewById(R.id.stuntList);
-        adapter = new CustomArrayAdapter(this, stunts);
+        listView = (ListView) root.findViewById(R.id.stuntList);
+        adapter = new CustomArrayAdapter(getActivity(), stunts);
         listView.setAdapter(adapter);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) root.findViewById(R.id.fab);
         fab.attachToListView(listView);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                addStunt(v);
+            }
+         });
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
@@ -63,46 +57,13 @@ public class EditStuntList extends FragmentActivity  {
                 createDialog(selectedStunt);
             }
         });
-    }
 
-    private void createDialog(final Stunt selectedStunt)
-    {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-        final EditText input = new EditText(this);
-        input.setText(selectedStunt.stuntName);
-        alert.setView(input);
-
-        alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton)
-            {
-                selectedStunt.stuntName = input.getText().toString();
-                if (db.updateStunt(selectedStunt))
-                    Toast.makeText(getApplicationContext(), "Stunt has been updated", Toast.LENGTH_LONG).show();
-                else
-                    Toast.makeText(getApplicationContext(), "Stunt update failed.", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        alert.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-                if (db.deleteStunt(selectedStunt)) {
-                    adapter.removeStunt(selectedStuntIndex);
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(getApplicationContext(), "Delete successful.", Toast.LENGTH_LONG).show();
-                }
-                else
-                    Toast.makeText(getApplicationContext(), "Delete failed.", Toast.LENGTH_LONG).show();
-            }
-        });
-
-        alert.show();
+        return root;
     }
 
     private void initializeDataSources() {
 
-        db = new SQLiteHelper(this);
+        db = new SQLiteHelper(getActivity());
         // copy assets DB to app DB.
         try {
             db.create();
@@ -119,10 +80,45 @@ public class EditStuntList extends FragmentActivity  {
         }
     }
 
+    private void createDialog(final Stunt selectedStunt)
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+
+        final EditText input = new EditText(getActivity());
+        input.setText(selectedStunt.stuntName);
+        alert.setView(input);
+
+        alert.setPositiveButton("Update", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton)
+            {
+                selectedStunt.stuntName = input.getText().toString();
+                if (db.updateStunt(selectedStunt))
+                    Toast.makeText(getActivity(), "Stunt has been updated", Toast.LENGTH_LONG).show();
+                else
+                    Toast.makeText(getActivity(), "Stunt update failed.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        alert.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+
+                if (db.deleteStunt(selectedStunt)) {
+                    adapter.removeStunt(selectedStuntIndex);
+                    adapter.notifyDataSetChanged();
+                    Toast.makeText(getActivity(), "Delete successful.", Toast.LENGTH_LONG).show();
+                }
+                else
+                    Toast.makeText(getActivity(), "Delete failed.", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        alert.show();
+    }
+
     public void addStunt(final View view)
     {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        final EditText stuntInput = new EditText(this);
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        final EditText stuntInput = new EditText(getActivity());
 
         alert.setTitle("New Stunt");
         alert.setView(stuntInput);
@@ -139,7 +135,6 @@ public class EditStuntList extends FragmentActivity  {
                     newStunt.stuntName = stuntInput.getText().toString();
                     int stuntId = stunts.size() + 1;
                     newStunt.stuntId = stuntId;
-
                     try
                     {
                         db.insertStunt(newStunt);
@@ -149,7 +144,7 @@ public class EditStuntList extends FragmentActivity  {
                         Log.e("TaG", "SQLiteException:" + e.getMessage());
                     }
 
-                    Toast.makeText(getApplicationContext(), "Stunt had been added", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Stunt had been added", Toast.LENGTH_SHORT).show();
                     dialogInterface.cancel();
                 }
             }
@@ -164,30 +159,4 @@ public class EditStuntList extends FragmentActivity  {
 
         alert.show();
     }
-
-    public void exitList (View view)
-    {
-        this.finish();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.edit_stunt_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 }
-
-

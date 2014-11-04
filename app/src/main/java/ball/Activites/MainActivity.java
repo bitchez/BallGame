@@ -1,36 +1,84 @@
 package ball.Activites;
 
-import android.app.Activity;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import com.game.ball.ballgame.R;
+
 import java.io.IOException;
-import java.util.List;
-import java.util.Random;
+import java.util.ArrayList;
 
 import ball.DataSources.SQLiteHelper;
+import ball.Fragments.RandomizeFragment;
+import ball.Fragments.StuntListFragment;
 import ball.Models.Stunt;
 
-public class MainActivity extends Activity
+public class MainActivity extends ActionBarActivity implements ActionBar.OnNavigationListener
 {
-    private List<Stunt> stunts;
+    public ArrayList<Stunt> stunts = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
 
-        String packageName = getApplicationContext().getPackageName();
-        initializeDataSources();
+        initActionBar();
+    }
+
+    @SuppressWarnings("deprecation")
+    private void initActionBar() {
+        if (getSupportActionBar() != null) {
+            ActionBar actionBar = getSupportActionBar();
+            actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
+            actionBar.addTab(actionBar.newTab()
+                    .setText("Stunts")
+                    .setTabListener(new ActionBar.TabListener() {
+                        @Override
+                        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+                            fragmentTransaction.replace(android.R.id.content, new StuntListFragment());
+                        }
+
+                        @Override
+                        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {}
+
+                        @Override
+                        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {}
+                    }));
+            actionBar.addTab(actionBar.newTab()
+                    .setText("Randomize")
+                    .setTabListener(new ActionBar.TabListener() {
+                        @Override
+                        public void onTabSelected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+                            fragmentTransaction.replace(android.R.id.content, new RandomizeFragment());
+                        }
+
+                        @Override
+                        public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {}
+
+                        @Override
+                        public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {}
+                    }));
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(int itemPosition, long itemId) {
+        switch (itemPosition) {
+            case 0:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new StuntListFragment())
+                        .commit();
+                return true;
+            case 1:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(android.R.id.content, new RandomizeFragment())
+                        .commit();
+                return true;
+            default:
+                return false;
+        }
     }
 
     private void initializeDataSources() {
@@ -45,7 +93,6 @@ public class MainActivity extends Activity
 
         // get all stunts
         if ( db.open() ) {
-
             stunts = db.getStunts();
 
         } else {
@@ -53,74 +100,40 @@ public class MainActivity extends Activity
         }
     }
 
-    public void randomizeStunt(View view)
-    {
-        Toast.makeText(this, "you are currently stuntin'", Toast.LENGTH_LONG).show();
-        Random myRandomizer = new Random();
-        Stunt random = stunts.get(myRandomizer.nextInt(stunts.size()));
-        TextView stuntText  = (TextView) findViewById(R.id.stuntText);
-        stuntText.setText(random.stuntName);
-        new AlertDialog.Builder(this)
-                .setTitle("Here is your Stunt!")
-                .setMessage(random.stuntName)
-                .setPositiveButton("Keep this Stunt" , new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.cancel();
-                    }
-                })
-                .setNegativeButton("Delete this Stunt", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        //This is where the stunt will be deleted from the database
-                        //After deletion, the dialog will close the dialogue box
-                        //And show a toast saying stunt has been deleted
-                        Toast.makeText(getApplicationContext(), "Stunt has been deleted", Toast.LENGTH_SHORT).show();
-                        dialogInterface.cancel();
-                    }
-                })
-                .show();
-    }
+//    public void randomizeStunt(View view)
+//    {
+//        Toast.makeText(this, "you are currently stuntin'", Toast.LENGTH_LONG).show();
+//        Random myRandomizer = new Random();
+//        Stunt random = stunts.get(myRandomizer.nextInt(stunts.size()));
+//        TextView stuntText  = (TextView) findViewById(R.id.stuntText);
+//        stuntText.setText(random.stuntName);
+////        new AlertDialog.Builder(this)
+////                .setTitle("Here is your Stunt!")
+////                .setMessage(random.stuntName)
+////                .setPositiveButton("Keep this Stunt" , new DialogInterface.OnClickListener() {
+////                    @Override
+////                    public void onClick(DialogInterface dialogInterface, int i) {
+////                        dialogInterface.cancel();
+////                    }
+////                })
+////                .setNegativeButton("Delete this Stunt", new DialogInterface.OnClickListener() {
+////                    @Override
+////                    public void onClick(DialogInterface dialogInterface, int i) {
+////                        //This is where the stunt will be deleted from the database
+////                        //After deletion, the dialog will close the dialogue box
+////                        //And show a toast saying stunt has been deleted
+////                        Toast.makeText(getApplicationContext(), "Stunt has been deleted", Toast.LENGTH_SHORT).show();
+////                        dialogInterface.cancel();
+////                    }
+////                })
+////                .show();
+//    }
 
-    public void addStunt(final View view)
-    {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        final EditText stuntInput = new EditText(this);
-
-        alert.setTitle("Add New Stunt");
-        alert.setMessage("Type in a new Stunt and select ok to save.");
-        alert.setView(stuntInput);
-        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                if (stuntInput.getText().toString().trim().equals("")) {
-                    Toast.makeText(getApplicationContext(), "Stunt field cannont be blank! Please try again.", Toast.LENGTH_LONG).show();
-                    dialogInterface.cancel();
-                }
-                else {
-                    String newStunt = stuntInput.getText().toString();
-
-                    //Add the new Stunt to the database
-
-                    Toast.makeText(getApplicationContext(), "Stunt had been added!", Toast.LENGTH_SHORT).show();
-                    dialogInterface.cancel();
-                }
-            }
-        });
-        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        alert.show();
-    }
-
-public void editStuntList (View view)
-{
-    Intent intent = new Intent(this, EditStuntList.class);
-    startActivity(intent);
-}
+//    public void editStuntList (View view)
+//    {
+//        Intent intent = new Intent(this, EditStuntList.class);
+//        startActivity(intent);
+//    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -131,13 +144,20 @@ public void editStuntList (View view)
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
+//        if (item.getItemId() == R.id.about) {
+//            TextView content = (TextView) getLayoutInflater().inflate(R.layout.about_view, null);
+//            content.setMovementMethod(LinkMovementMethod.getInstance());
+//            content.setText(Html.fromHtml(getString(R.string.about_body)));
+//            new AlertDialog.Builder(this)
+//                    .setTitle(R.string.about)
+//                    .setView(content)
+//                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.dismiss();
+//                        }
+//                    }).create().show();
+//        }
         return super.onOptionsItemSelected(item);
     }
 }

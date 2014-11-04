@@ -6,8 +6,8 @@ android {
 
     defaultConfig {
         applicationId "com.game.ball.ballgame"
-        minSdkVersion 15
-        targetSdkVersion 20
+        minSdkVersion 14
+        targetSdkVersion 18
         versionCode 1
         versionName "1.0"
     }
@@ -22,3 +22,24 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 }
+
+dependencies {
+    compile 'com.android.support:support-v4:20.0.0'
+
+    // You must install or update the Support Repository through the SDK manager to use this dependency.
+    // The Support Repository (separate from the corresponding library) can be found in the Extras category.
+    // compile 'com.android.support:appcompat-v7:18.0.0'
+}
+
+dependencies {
+    compile 'com.melnykov:floatingactionbutton:1.0.6'
+}
+
+dependencies {
+    compile 'com.android.support:recyclerview-v7:21.0.0-rc1'
+}
+
+dependencies {
+    compile "com.android.support:appcompat-v7:18.0.+"
+}
+
