@@ -161,23 +161,12 @@ public class SQLiteHelper extends SQLiteOpenHelper {
         return db.delete(TABLE_STUNTS, COLUMN_STUNT_ID + "=" + selectedStunt.stuntId, null) > 0;
     }
 
-    public Stunt insertStunt(Stunt stunt)
+    public void insertStunt(Stunt stunt)
     {
         ContentValues values = new ContentValues();
         values.put(COLUMN_STUNT_NAME, stunt.stuntName);
         values.put(COLUMN_STUNT_ID, stunt.stuntId);
-
-        long insertId = db.insert(TABLE_STUNTS, null, values);
-
-        Cursor cursor = db.query(TABLE_STUNTS,
-                allColumns, COLUMN_STUNT_ID + " = " + insertId, null,
-                null, null, null);
-
-        cursor.moveToFirst();
-
-        Stunt newStunt = cursorToStunt(cursor);
-        cursor.close();
-        return stunt;
+        db.insert(TABLE_STUNTS, null, values);
     }
 
     private Stunt cursorToStunt(Cursor cursor)

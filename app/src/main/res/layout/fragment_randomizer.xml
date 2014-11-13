@@ -2,8 +2,37 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="com.game.ball.ballgame.RandomizerFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <TextView
+        android:id="@+id/randomStuntText"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:minHeight="40dp"
+        android:minWidth="24dp"
+        android:layout_gravity="right"
+        android:typeface="monospace"
+        android:textAlignment="center"
+        android:gravity="center_horizontal"
+        android:textSize="35dp"
+        android:textIsSelectable="false"
+        android:padding="10dp"
+        android:hint="You need to press the button first ya big goof"
+        android:layout_marginTop="40dp" />
 
+    <ProgressBar
+        android:id="@+id/spinner"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center" />
+
+    <Button
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Randomize"
+        android:id="@+id/radomizeButton"
+        android:onClick="selectRandomStunt"
+        android:layout_gravity="center"
+        android:layout_marginTop="75dp" />
 </FrameLayout>

@@ -44,7 +44,7 @@ public class StuntListFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(final View v) {
-                addStunt(v);
+                addStunt();
             }
          });
 
@@ -54,7 +54,7 @@ public class StuntListFragment extends Fragment {
             {
                 selectedStuntIndex = position;
                 selectedStunt = stunts.get((position));
-                createDialog(selectedStunt);
+                createDialog(selectedStunt, view);
             }
         });
 
@@ -64,23 +64,20 @@ public class StuntListFragment extends Fragment {
     private void initializeDataSources() {
 
         db = new SQLiteHelper(getActivity());
-        // copy assets DB to app DB.
         try {
             db.create();
         } catch (IOException ioe) {
             throw new Error("Unable to create database");
         }
-
-        // get all stunts
         if ( db.open() ) {
             stunts = db.getStunts();
 
         } else {
-            // error opening DB.
+            throw new Error("Unable to get stunts");
         }
     }
 
-    private void createDialog(final Stunt selectedStunt)
+    private void createDialog(final Stunt selectedStunt, final View view)
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
 
@@ -100,22 +97,23 @@ public class StuntListFragment extends Fragment {
         });
 
         alert.setNegativeButton("Delete", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-
-                if (db.deleteStunt(selectedStunt)) {
-                    adapter.removeStunt(selectedStuntIndex);
-                    adapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), "Delete successful.", Toast.LENGTH_LONG).show();
-                }
-                else
-                    Toast.makeText(getActivity(), "Delete failed.", Toast.LENGTH_LONG).show();
-            }
-        });
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        view.animate().setDuration(500).alpha(0)
+                                .withEndAction(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        stunts.remove(selectedStuntIndex);
+                                        adapter.notifyDataSetChanged();
+                                        view.setAlpha(1);
+                                    }
+                                });
+                    }
+                });
 
         alert.show();
     }
 
-    public void addStunt(final View view)
+    public void addStunt()
     {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         final EditText stuntInput = new EditText(getActivity());
@@ -144,7 +142,7 @@ public class StuntListFragment extends Fragment {
                         Log.e("TaG", "SQLiteException:" + e.getMessage());
                     }
 
-                    Toast.makeText(getActivity(), "Stunt had been added", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), newStunt.stuntName + "had been added", Toast.LENGTH_SHORT).show();
                     dialogInterface.cancel();
                 }
             }

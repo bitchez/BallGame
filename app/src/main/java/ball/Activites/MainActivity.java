@@ -96,7 +96,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
             stunts = db.getStunts();
 
         } else {
-            // error opening DB.
+            throw new Error("Unable to get stunts");
         }
     }
 
@@ -137,7 +137,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.OnNavig
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }

@@ -24,6 +24,6 @@
         android:onClick="addStunt"
         android:src="@drawable/ic_add_white_24dp"
         fab:fab_colorNormal="@color/primary"
-        fab:fab_colorPressed="@color/primary_pressed"
-        fab:fab_colorRipple="@color/ripple" />
+        fab:fab_colorPressed="@color/ripple"
+        fab:fab_colorRipple="@color/primary_pressed"/>
 </FrameLayout>
